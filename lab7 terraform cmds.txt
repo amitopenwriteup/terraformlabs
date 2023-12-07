@@ -1,0 +1,36 @@
+cmds
+
+
+
+1. terraform plan
+
+2. create two parallel plan
+
+terraform plan -parallelism=2
+
+3. Refresh and sync with was
+
+terraform plan -refresh=true
+
+4. redirect the output for review
+
+terraform plan -out /tmp/tfout
+
+5. show the output
+terraform show /tmp/tfout
+
+6. list the state file
+
+terraform state list
+
+root@dev:~/awslabs# terraform state list
+aws_key_pair.student
+
+terraform state show aws_key_pair.student
+
+terraform destroy -target=aws_key_pair.student -auto-approve
+
+
+terraform state show aws_key_pair.student
+
+terraform destroy -auto-approve

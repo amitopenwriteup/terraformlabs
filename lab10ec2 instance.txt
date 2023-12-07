@@ -1,0 +1,36 @@
+create a ec2.tf
+1.
+resource "aws_instance" "example1" {
+  ami           = data.aws_ami.latest_amazon_linux.id   # Replace with your desired AMI ID
+  instance_type = var.instance_type
+  subnet_id     = data.aws_subnet.selected.id    # Replace with your desired subnet ID
+  key_name      = aws_key_pair.example.key_name          # Replace with your desired key pair name
+
+  tags = {
+    "Name" = format("MyInstance-%s", formatdate("YYYYMMDD", timestamp()))
+  }
+}
+
+2.
+in output block
+output "public_ip" {
+  value = aws_instance.example1.public_ip
+}
+3.
+terraform validate
+terraform plan
+terraform plan -out /tmp/tfout
+
+4. show the output
+terraform show /tmp/tfout
+
+5.terraform apply
+
+6. terraform output
+
+7. terraform state list
+
+8. terraform destroy -target=aws_instance.example
+
+9. terraform state list
+

@@ -1,0 +1,22 @@
+lab12:
+
+terraform taint
+
+1. Create ec2 resource using validate and apply
+
+2. terraform state list
+
+3. Try taint option on ec2 resource
+
+terraform taint <ec2 resource>
+
+example: ta terraform taint aws_instance.example
+Resource instance aws_instance.example has been marked as tainted.
+
+4.Try terraform apply:
+
+terraform apply
+
+Plan: 1 to add, 0 to change, 1 to destroy.
+
+Changes to Outputs:

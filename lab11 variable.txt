@@ -1,0 +1,63 @@
+lab11 variable:
+
+1.create a var.tf
+
+variable "instance_type" {
+  description = "The EC2 instance type"
+  type        = string
+  default     = "t2.micro"
+}
+
+2.in ec2.tf file modfiy the instance type (Replace t2.micro with var.instance_type)
+
+example
+resource "aws_instance" "example" {
+  ami           = data.aws_ami.latest_amazon_linux.id   # Replace with your desired AMI ID
+  instance_type = var.instance_type
+  subnet_id     =  data.aws_subnet.selected.id    # Replace with your desired subnet ID
+  key_name      = aws_key_pair.student.key_name          # Replace with your desired key pair name
+
+  tags = {
+    "Name" = format("MyInstance-%s", formatdate("YYYYMMDD", timestamp()))
+  }
+}
+
+In output.tf file
+
+output "instance_type" {
+ value = aws_instance.example.instance_type
+}
+
+
+3.
+terraform validate
+terraform apply
+4.
+terraform state list
+terraform destroy -target=aws_instance.example --auto-approve
+
+5.During run time, setting var, check the output it will show t2.large
+
+terraform plan -var="instance_type=t.large"
+terraform apply -var="instance_type=t.large"
+
+Again terminate
+
+terraform state list
+terraform destroy -target=aws_instance.example --auto-approve
+
+6.Setting env value
+ export TF_VAR_instance_type=t.large
+ terraform plan
+
+7.using file
+unset TF_VAR_instance_type=t.large
+
+create var.tfvars and copy below code
+
+instance_type = "t3.small"
+
+terraform plan -var-file="var.tfvars"
+
+#Check the instance type
+

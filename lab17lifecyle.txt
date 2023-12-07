@@ -1,0 +1,48 @@
+1. destroy ec2 instance
+
+terraform state list
+
+terraform destroy --target=aws_instance.example --auto-approve
+
+2. Introduce lifecycle block, in ec2.tf
+
+locals {
+  instance_ami         = data.aws_ami.latest_amazon_linux.id
+  instance_subnet      = data.aws_subnet.selected.id
+  instance_key_pair    = aws_key_pair.student.key_name
+  instance_tags        = {
+    "Name" = format("MyInstance-%s", formatdate("YYYYMMDD", timestamp()))
+  }
+}
+
+resource "aws_instance" "example" {
+  ami           = local.instance_ami
+  instance_type = var.instance_type
+  subnet_id     = local.instance_subnet
+  key_name      = local.instance_key_pair
+
+  tags = local.instance_tags
+
+  # Specify dependencies explicitly using depends_on if needed
+  depends_on = [
+    aws_key_pair.student,
+    data.aws_subnet.selected,
+    data.aws_ami.latest_amazon_linux,
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+    prevent_destroy       = false
+  }
+}
+
+3. terraform validate
+4. terraform apply
+5. terraform destroy --target=aws_instance.example --auto-approve
+6. change the paramenter :  prevent_destroy       = true
+7. terraform validate 
+terraform apply
+8. Try to destroy it: terraform destroy --target=aws_instance.example --auto-approve
+ Error: Instance cannot be destroyed
+9 modify parameter: prevent_destroy = false
+10.terraform destroy --target=aws_instance.example --auto-approve

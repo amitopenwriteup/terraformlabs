@@ -1,0 +1,28 @@
+lab 6: outputblock
+1. Create a output.tf in awslabs
+
+output "aws_key_pair"{
+value = aws_key_pair.student.id
+}
+
+2. terraform apply
+
+3.root@dev:~/awslabs#
+
+ terraform output
+aws_key_pair = "training-1"
+root@dev:~/awslabs# 
+
+terraform output aws_key_pair
+"training-1"
+
+4.
+
+terraform output -json
+{
+  "aws_key_pair": {
+    "sensitive": false,
+    "type": "string",
+    "value": "training-1"
+  }
+}

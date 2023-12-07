@@ -1,0 +1,42 @@
+To set up the AWS Command Line Interface (CLI) on Ubuntu 22.04, you can follow these steps:
+
+Step 1: Update your system
+1. Open a terminal on your Ubuntu machine.
+2. Run the following command to update your system's package lists:
+
+
+sudo apt update
+
+
+Step 2: Install the AWS CLI
+1. Run the following command to install the AWS CLI using the package manager:
+
+
+sudo apt install awscli
+
+
+2. Confirm the installation by typing `Y` when prompted.
+
+Step 3: Configure the AWS CLI
+1. Run the following command to start the configuration process:
+
+
+aws configure
+
+
+2. You will be prompted to enter the following information:
+   - AWS Access Key ID: Enter the Access Key ID for your AWS account.
+   - AWS Secret Access Key: Enter the Secret Access Key corresponding to the Access Key ID.
+   - Default region name: Specify the AWS region you want to use (e.g., `us-west-2`).
+   - Default output format: Press Enter to use the default value (`json`).
+
+Step 4: Verify the installation
+1. Run the following command to verify that the AWS CLI is installed and configured correctly:
+
+
+aws ec2 describe-instances
+
+
+2. If the command returns information about your EC2 instances, it means the AWS CLI is set up correctly.
+
+That's it! You have successfully installed and configured the AWS CLI on Ubuntu 22.04. You can now use various AWS CLI commands to interact with your AWS resources from the command line.

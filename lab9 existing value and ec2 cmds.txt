@@ -1,0 +1,28 @@
+#get the vpc id
+
+ aws ec2 describe-vpcs --query 'Vpcs[*].VpcId' --output text
+
+# get the subnet id for vpc
+
+
+aws ec2 describe-subnets --filters Name=vpc-id,Values=<provide vpcid>
+
+
+Create a data block and output block for existing vpc and subnet in region
+
+create a vpcsubnet.tf
+
+data "aws_vpc" "selected" {
+  id = "vpc-0e2ae6b878fbcd5c0"
+}
+data "aws_subnet" "selected" {
+  id = "subnet-018ff8b1f17a6c316"
+}
+output "selected_vpc_details" {
+  value = {
+    id          = data.aws_vpc.selected.id
+    cidr_block  = data.aws_vpc.selected.cidr_block
+    subnet = data.aws_subnet.selected.id
+    # Add more attributes as needed
+  }
+}

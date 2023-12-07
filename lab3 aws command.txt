@@ -1,0 +1,10 @@
+#get the vpc id
+
+aws ec2 describe-vpcs --query 'Vpcs[*].VpcId' --output text
+
+# get the subnet id for vpc
+aws ec2 describe-subnets --query 'Subnets[*].CidrBlock' --output text
+
+#Get all the vpc
+
+aws ec2 describe-subnets --query 'Subnets[*].[SubnetId, CidrBlock]' --output table

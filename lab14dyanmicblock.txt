@@ -1,0 +1,62 @@
+dynamic block
+
+1. Create ingress.tf
+
+resource "aws_security_group" "example" {
+  name        = "student01-security-group"
+  description = "Example security group"
+
+  dynamic "ingress" {
+    for_each = [443, 80, 8080]
+    iterator = port
+    content {
+      from_port   = port.value
+      to_port     = port.value
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+}
+
+2. update the output block in output block
+
+output "security_group_id" {
+  value = aws_security_group.example.id
+}
+
+output "security_group_name" {
+  value = aws_security_group.example.name
+}
+
+output "security_group_description" {
+  value = aws_security_group.example.description
+}
+
+output "security_group_ingress_rules" {
+  value = aws_security_group.example.ingress
+}
+
+3. terraform validate
+terraform apply --auto-approve
+4. terraform state list
+5. destroy the target
+terraform destroy --target=aws_security_group.example --auto-approve
+6.remove the ingress.tf
+rm -rf ingress.tf
+7. Remove the above code from output block (Please remove)
+
+output "security_group_id" {
+  value = aws_security_group.example.id
+}
+
+output "security_group_name" {
+  value = aws_security_group.example.name
+}
+
+output "security_group_description" {
+  value = aws_security_group.example.description
+}
+
+output "security_group_ingress_rules" {
+  value = aws_security_group.example.ingress
+}

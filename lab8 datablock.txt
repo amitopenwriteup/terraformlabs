@@ -1,0 +1,22 @@
+data block
+
+1. Create a data.tf
+
+data "aws_ami" "latest_amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
+2. update the output.tf
+output "aws_ami"{
+value = data.aws_ami.latest_amazon_linux.id
+}
+
+3. run following commands 
+terraform validate
+terraform apply 
