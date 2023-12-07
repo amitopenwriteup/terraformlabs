@@ -11,9 +11,7 @@ $ vi ~/.aws/credentials
 aws_access_key_id = your-key
 aws_secret_access_key = your-secret-access-key
 
-3. Create a directory in which to store all of your Terraform configurations:
-$ mkdir ~/terraform_base
-4. Create the first Terraform configuration called "awslab" using:
+3. Create the first Terraform configuration called "awslab" using:
 $ mkdir ~/awslab
 
 
