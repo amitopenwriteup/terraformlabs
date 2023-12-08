@@ -40,8 +40,8 @@ terraform destroy -target=aws_instance.example --auto-approve
 
 5.During run time, setting var, check the output it will show t2.large
 
-terraform plan -var="instance_type=t.large"
-terraform apply -var="instance_type=t.large"
+terraform plan -var="instance_type=t2.large"
+terraform apply -var="instance_type=t2.large"
 
 Again terminate
 
@@ -49,11 +49,11 @@ terraform state list
 terraform destroy -target=aws_instance.example --auto-approve
 
 6.Setting env value
- export TF_VAR_instance_type=t.large
+ export TF_VAR_instance_type=t2.large
  terraform plan
 
 7.using file
-unset TF_VAR_instance_type=t.large
+unset TF_VAR_instance_type=t2.large
 
 create var.tfvars and copy below code
 
