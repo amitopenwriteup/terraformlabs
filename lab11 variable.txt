@@ -53,7 +53,7 @@ terraform destroy -target=aws_instance.example --auto-approve
  terraform plan
 
 7.using file
-unset TF_VAR_instance_type=t2.large
+unset TF_VAR_instance_type
 
 create var.tfvars and copy below code
 
