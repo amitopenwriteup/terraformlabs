@@ -1,0 +1,210 @@
+1. Create an SSH key as follows:
+
+mkdir ~/terraform_base/keys
+cd ~/terraform_base/keys
+ssh-keygen
+
+Generating public/private rsa key pair.
+Enter file in which to save the key (/root/.ssh/id_rsa): student.1-vm-key
+
+
+Note: Do not use a passphrase
+
+2.output of ls command
+
+ ls
+student.1-vm-key  student.1-vm-key.pub
+
+
+3. copy the public key
+
+cat student.1-vm-key.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCwXSFp6qjxqjW8TnEkHvQxeMmNSpGNW3GZSsOnd0X6uFDi/wfn1XKs0LJA0l69NB8r8OlTu/DKyUYo9cNh1SSARkE9+ZfeKnr6OzJgMZSS7Ro55edr/bjiT41tUmdau5KpLVo8om0Vx7irbcXWjOtnJGCoIUfzYJc93W9CDYBAZlxPc6t0nnFcPJY+AR3tHDi8zeRXTjuosgo7VGjOe/RrCtg8aFHT8tL7auAz8sJeI6Wrm9eWn8Ivqhy/KD4H8ZqlG21Q+/G8yHKanvApobbI7zXb2grNYvsTp+sg2pMrTGMSRTaHM46kEPbNhk+4FCyMVLWFy+Um6JuPOjf3wyju+Fk/rpLOeeDPAE9OhvdYIVJDOPgLjFY8epx7BwTk8oVVFXVddam5KNFgUWsqEPETpoTzLQQuP6Mkp86wcKC+RwmfR9iFE/nReP7nfWPTGSPjjm6jyYgrssizQxDsqPANP4fVwEz6yp9I6CTZ+pMiM7YySRR9Gf3FiJUNimuVn/0= root@dev
+
+4.
+Create a new file named ~/terraform_base/networking/ssh.tf with the following
+content:
+
+resource "aws_key_pair" "vm_ssh_key" {
+key_name = "student.XX-vm-key"
+public_key = "paste-your-public-key-material here"
+}
+
+Example
+
+resource "aws_key_pair" "vm_ssh_key" {
+key_name = "student.1-vm-key"
+public_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCwXSFp6qjxqjW8TnEkHvQxeMmNSpGNW3GZSsOnd0X6uFDi/wfn1XKs0LJA0l69NB8r8OlTu/DKyUYo9cNh1SSARkE9+ZfeKnr6OzJgMZSS7Ro55edr/bjiT41tUmdau5KpLVo8om0Vx7irbcXWjOtnJGCoIUfzYJc93W9CDYBAZlxPc6t0nnFcPJY+AR3tHDi8zeRXTjuosgo7VGjOe/RrCtg8aFHT8tL7auAz8sJeI6Wrm9eWn8Ivqhy/KD4H8ZqlG21Q+/G8yHKanvApobbI7zXb2grNYvsTp+sg2pMrTGMSRTaHM46kEPbNhk+4FCyMVLWFy+Um6JuPOjf3wyju+Fk/rpLOeeDPAE9OhvdYIVJDOPgLjFY8epx7BwTk8oVVFXVddam5KNFgUWsqEPETpoTzLQQuP6Mkp86wcKC+RwmfR9iFE/nReP7nfWPTGSPjjm6jyYgrssizQxDsqPANP4fVwEz6yp9I6CTZ+pMiM7YySRR9Gf3FiJUNimuVn/0= root@dev"
+}
+
+Add aws_key_pair in output.tf in existing networking folder 
+
+
+5. modify instance/main.tf (add key_name)
+
+example
+
+data "terraform_remote_state" "network_details" {
+backend = "s3"
+config = {
+bucket = "student-amit-bucket"
+key = "student.amit-network-state"
+region = "us-west-1"
+}
+}
+
+data "aws_ami" "latest_amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
+resource "aws_instance" "my_vm" {
+ami = data.aws_ami.latest_amazon_linux.id
+subnet_id = data.terraform_remote_state.network_details.outputs.my_subnet
+instance_type = "t3.micro"
+key_name = data.terraform_remote_state.network_details.outputs.aws_key_pair
+tags = {
+Name = "student.1-vm1"
+}
+}
+
+6. Write output.tf for getting public ip
+7. 
+terraform validate
+
+terraform apply
+
+8. Test the SSH connection to the new instance. The default username for this
+instance is being provided by your instructor
+ ssh -i path-to-private-key ubuntu@your-vm-ip
+
+
+example
+
+ssh -i ../keys/student.1-vm-key ec2-user@54.183.190.78
+
+#it fails
+
+please delete the instance
+terraform destroy
+
+Creating Security Groups
+
+10.Switch back to the networking config
+
+Create a new file ~/terraform_base/networking/security_groups.tf. Add a
+security group for your VPC allowing port 22 ingress access and unlimited
+egress access,replace xx with your student id
+
+
+resource "aws_security_group" "open_ports" {
+name = "student.XX-security-group"
+vpc_id = aws_vpc.main-vpc.id
+ingress {
+description = "allow ingress on port 22"
+from_port = 22
+to_port = 22
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
+}
+egress {
+description = "allows unlimited egress"
+from_port = 0
+to_port = 0
+protocol = -1
+cidr_blocks = ["0.0.0.0/0"]
+}
+}
+
+
+example
+
+
+resource "aws_security_group" "open_ports" {
+name = "student.1security-group"
+vpc_id = aws_vpc.main-vpc.id
+ingress {
+description = "allow ingress on port 22"
+from_port = 22
+to_port = 22
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
+}
+egress {
+description = "allows unlimited egress"
+from_port = 0
+to_port = 0
+protocol = -1
+cidr_blocks = ["0.0.0.0/0"]
+}
+}
+
+11. Add to  output.tf
+
+output "security_group_id_array" {
+value = aws_security_group.open_ports.*.id
+}
+
+12.
+terraform validate
+terraform apply
+
+13.Return to the instances configuration,
+
+Add the security group data to the aws_instances config:
+resource "aws_instance" "my_vm" {
+ami = "<ami-id-from-your-instructor>"
+instance_type = "t3.micro"
+subnet_id = data.terraform_remote_state.network_details.outputs.my_subnet
+key_name = data.terraform_remote_state.network_details.outputs.key_name
+vpc_security_group_ids =data.terraform_remote_state.network_details.outputs.security_group_id_array
+tags = {
+Name = "student.XX-vm1"
+}
+}
+
+example code
+
+data "terraform_remote_state" "network_details" {
+backend = "s3"
+config = {
+bucket = "student-amit-bucket"
+key = "student.amit-network-state"
+region = "us-west-1"
+}
+}
+
+data "aws_ami" "latest_amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
+resource "aws_instance" "my_vm" {
+ami = data.aws_ami.latest_amazon_linux.id
+subnet_id = data.terraform_remote_state.network_details.outputs.my_subnet
+instance_type = "t3.micro"
+key_name = data.terraform_remote_state.network_details.outputs.aws_key_pair
+vpc_security_group_ids =data.terraform_remote_state.network_details.outputs.security_group_id_array
+tags = {
+Name = "student.1-vm1"
+}
+}
+
+
+14.
+terraform validate
+terraform apply
+
+15. try again
+ ssh -i ../keys/student.1-vm-key ec2-user@54.219.139.176
+

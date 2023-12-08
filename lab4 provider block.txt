@@ -1,0 +1,42 @@
+Configure the AWS CLI:
+$ aws configure
+a. AWS Access Key ID: <provided by your instructor>
+b. AWS Secret Access Key: <provided by your instructor>
+c. region: <provided by your instructor
+d. output format: table
+
+Edit the credentials file using your favorite editor. For Example:
+$ vi ~/.aws/credentials
+[default]
+aws_access_key_id = your-key
+aws_secret_access_key = your-secret-access-key
+
+3. Create a directory in which to store all of your Terraform configurations:
+$ mkdir ~/terraform_base
+4. Create the first Terraform configuration called "system" using:
+$ mkdir ~/terraform_base/system
+
+4. To create the public/private key pair, use the ssh-keygen command
+
+5. Create a new file ~/terraform_base/system/provider.tf [use vi editor]
+
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 4.0"
+    }
+  }
+}
+
+# Configure the AWS Provider
+provider "aws" {
+  region                   = "us-west-1"
+  shared_config_files      = ["~/.aws/config"]
+  shared_credentials_files = ["~/.aws/credentials"]
+  profile                  = "default"
+}
+
+6) terraform init
+
+

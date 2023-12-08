@@ -1,0 +1,108 @@
+1. In the ~/terraform_base/networking directory,
+
+Create a new file named ~/terraform_base/networking/networking.tf. Add the
+
+following content, replacing 'XX' with your (1,2,3...;insturcutor will guide) in the CIDR block:
+
+resource "aws_vpc" "main-vpc" {
+cidr_block = "10.XX.0.0/16"
+enable_dns_hostnames = "true"
+tags = {
+Name = "student.XX-vpc"
+}
+}
+
+2.Apply with:
+
+$ terraform init
+$ terraform validate
+$ terraform apply
+
+
+4. Create an output.tf file in the networking
+
+Create an output.tf file in the networking directory to show the new VPC:
+
+output "my_vpc" {
+value = aws_vpc.main-vpc.id
+}
+
+5.
+ aws ec2 describe-vpcs --filters "Name=tag:Name,Values=student.1-vpc
+
+6.Create a subnet in the new VPC, include “aws_subnet” resource in
+~/terraform_base/networking/networking.tf file, XX replace with student number
+
+resource "aws_subnet" "subnet-1" {
+vpc_id = aws_vpc.main-vpc.id
+cidr_block = "10.XX.0.0/24"
+map_public_ip_on_launch = "true"
+tags = {
+Name = "student.XX-subnet-1"
+}
+}
+
+7.Add a block to the output.tf file to show the new subnet id:
+
+output "my_subnet" {
+value = aws_subnet.subnet-1.id
+}
+
+
+Now output.tf looks like
+
+output "my_vpc" {
+value = aws_vpc.main-vpc.id
+}
+output "my_subnet" {
+value = aws_subnet.subnet-1.id
+}
+
+
+8. terraform validate
+
+terraform plan
+
+terraform apply
+
+9. aws ec2 describe-subnets --filters "Name=tag:Name,Values=student.1-subnet-1"
+
+10. Create an Internet Gateway in terraform_base/networking/networking.tf, replace XX with student number
+
+resource "aws_internet_gateway" "igw" {
+vpc_id = aws_vpc.main-vpc.id
+tags = {
+Name = "student.XX-igw"
+}
+
+11. Add an output to output.tf to show the new Internet Gateway. Refer to the previous output examples to create this
+
+output "aws_internet_gateway" {
+ value = aws_internet_gateway.igw.id
+}
+
+11. Create a route table in networking/networking.tf, replace xx with student :
+resource "aws_route_table" "my-route-table" {
+vpc_id = aws_vpc.main-vpc.id
+#Route anything with a CIDR of 0.0.0.0/0 to the IGW
+route {
+cidr_block = "0.0.0.0/0"
+gateway_id = aws_internet_gateway.igw.id
+}
+tags = {
+Name = "student.1-route-table"
+}
+}
+
+12. Create a route table association in networking/networking.tf:
+
+resource "aws_route_table_association" "my-route-association" {
+subnet_id = aws_subnet.subnet-1.id
+route_table_id = aws_route_table.my-route-table.id
+}
+
+13.Add outputs for both the Route Table and the Route Table Association
+
+14. terrform validate
+
+ terraform apply

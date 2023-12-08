@@ -1,0 +1,124 @@
+1. Create a new directory ~/terraform_base/instances. This will hold your instance
+configuration
+$ mkdir ~/terraform_base/instances
+
+2. Copy the  provider.tf and backend_state.tf files from the
+~/terraform_base/networking directory to the instances directory by using the
+following command:
+$ cp  provider.tf backend_state.tf ~/terraform_base/instances
+
+3.Change the state file in which we track our instance state. In
+instances/backend_state.tf, change the key from student.XX-network-state to
+the student.XX-instance-state, and provide your s3 bucket name
+
+for example:
+
+terraform {
+backend "s3" {
+bucket = "students101-terraform-state-backend"
+key = "student.amit-instance-state"
+region = "us-west-1"
+dynamodb_table = "terraform_state"
+}
+}
+
+4.Initialize, validate and apply the configuration
+terraform init
+terraform validate
+terraform apply
+
+5. Create a new file in the instances directory named main.tf
+
+6. Variable flow:
+networking config -> backend state storage -> instances config
+
+Note: The bucket name can be found in the
+
+~/terraform_base/networking/backend_state.tf file, modify below entry
+
+
+data "terraform_remote_state" "network_details" {
+backend = "s3"
+config = {
+bucket = "<your bucket name>"
+key = "<your-NETWORKING-backend-state-filename>"
+region = "<region-in-which-state-s3-bucket-exists>"
+}
+}
+
+
+example (modified code put in main.tf)
+
+data "terraform_remote_state" "network_details" {
+backend = "s3" 
+config = {
+bucket = "studentxx-terraform-state-backend"
+key = "student.xx-network-state"
+region = "us-west-1"
+}
+}
+
+7. Put for ami id this block in main.tf
+
+data "aws_ami" "latest_amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
+8. put below code for vm
+
+resource "aws_instance" "my_vm" {
+ami = data.aws_ami.latest_amazon_linux.id
+subnet_id = data.terraform_remote_state.network_details.outputs.my_subnet
+instance_type = "t3.micro"
+tags = {
+Name = "student.XX-vm1"
+}
+}
+
+
+
+Sample code of main.tf, please provide your bucket name
+
+data "terraform_remote_state" "network_details" {
+backend = "s3"
+config = {
+bucket = "students101-terraform-state-backend"
+key = "students.amit-network-state"
+region = "us-west-1"
+}
+}
+
+data "aws_ami" "latest_amazon_linux" {
+  most_recent = true
+  owners      = ["amazon"]
+
+  filter {
+    name   = "name"
+    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+  }
+}
+
+resource "aws_instance" "my_vm" {
+ami = data.aws_ami.latest_amazon_linux.id
+subnet_id = data.terraform_remote_state.network_details.outputs.my_subnet
+instance_type = "t3.micro"
+tags = {
+Name = "student.1-vm1"
+}
+}
+
+
+10. Use the AWS CLI to verify the VM launch:
+
+ aws ec2 describe-instances --filter "Name=tag:Name,Values=student.1-vm1"
+
+11.Tear down the new instances deployment (shutting down your VM). Do not tear
+down the networking or system configurations
+From the instances directory:
+$ terraform destroy

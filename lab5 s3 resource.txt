@@ -1,0 +1,68 @@
+1. Replace amit name with your name, Create s3.tf  ~/terraform_base/system
+
+#Bucket name studentsxx replace with userid
+
+resource "aws_s3_bucket" "my_bucket" {
+    bucket = "studentsXX-terraform-state-backend"
+    force_destroy = "true"
+    versioning {
+        enabled = true
+    }
+    server_side_encryption_configuration {
+        rule {
+            apply_server_side_encryption_by_default {
+                sse_algorithm = "AES256"
+            }
+        }
+    }
+    object_lock_configuration {
+        object_lock_enabled = "Enabled"
+    }
+    tags = {
+        Name = "S3 Remote Terraform State Store"
+    }
+}
+
+
+
+3. terraform validate
+
+4.terraform apply
+
+5.  #Replace with your name
+aws s3 ls | grep student
+
+6. what has been created by listing the state:
+
+terraform state list
+
+7.Inspect the bucket by typing:
+
+terraform show -json
+
+8.Output the bucket name. Create a file: output.tf
+~/terraform_base/system/output.tf and add following content:
+
+output "s3-bucket-name" {
+value = aws_s3_bucket.my_bucket.id
+}
+
+9. terraform apply
+
+10. Create a dynamodb.tf
+ 
+resource "aws_dynamodb_table" "terraform-lock" {
+    name           = "terraform_state"
+    read_capacity  = 5
+    write_capacity = 5
+    hash_key       = "LockID"
+    attribute {
+        name = "LockID"
+        type = "S"
+    }
+    tags = {
+        "Name" = "DynamoDB Terraform State Lock Table"
+    }
+}
+
+11. validate and apply

@@ -1,0 +1,36 @@
+1.Create a new directory:
+mkdir ~/terraform_base/networking
+
+2.copy provider.tf from the system block
+
+cp ~/terraform_base/system/provider.tf ~/terraform_base/networking/
+
+3. Create a new file named ~/terraform_base/networking/backend_state.tf with the
+following content,provide correct bucket name,which you have created:
+
+terraform {
+  backend "s3" {
+    bucket         = "studentXX-terraform-state-backend"
+    region         = "us-west-1"
+    key            = "student.amit-network-state"
+    dynamodb_table = "terraform_state"
+  }
+}
+
+4. terraform init
+
+5. terraform validate
+
+6. terraform apply
+
+7. Test by looking at the contents of your S3 bucket
+
+a. Verify the name of your S3 backend state bucket, replace amit with your name:
+
+aws s3 ls | grep students
+
+b. Look at the contents of your S3 bucket:
+
+ aws s3 ls students101-terraform-state-backend
+
+
