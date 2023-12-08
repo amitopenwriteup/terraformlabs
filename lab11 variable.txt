@@ -1,5 +1,7 @@
 lab11 variable:
 
+terraform state list
+terraform destroy -target=<provide the name of ec2 instance getting from state list>
 1.create a var.tf
 
 variable "instance_type" {
