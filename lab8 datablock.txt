@@ -20,3 +20,4 @@ value = data.aws_ami.latest_amazon_linux.id
 3. run following commands 
 terraform validate
 terraform apply 
+terraform state list
