@@ -2,7 +2,7 @@ create a ec2.tf
 1.
 resource "aws_instance" "example1" {
   ami           = data.aws_ami.latest_amazon_linux.id   # Replace with your desired AMI ID
-  instance_type = var.instance_type
+  instance_type = "t2.micro"
   subnet_id     = data.aws_subnet.selected.id    # Replace with your desired subnet ID
   key_name      = aws_key_pair.example.key_name          # Replace with your desired key pair name
 
@@ -24,7 +24,7 @@ terraform plan -out /tmp/tfout
 4. show the output
 terraform show /tmp/tfout
 
-5.terraform apply
+5.terraform apply tfout
 
 6. terraform output
 
