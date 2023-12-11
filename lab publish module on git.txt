@@ -15,6 +15,7 @@ https://www.openwriteup.com/?page_id=1081
 3.Commit and push
 
  git commit -m "add all module files"
+git remote add origin <git repos ssh link>
  git push -u origin  main
  git tag -a "v0.0.1" -m "First release of s3-website module"
  git push --follow-tags
