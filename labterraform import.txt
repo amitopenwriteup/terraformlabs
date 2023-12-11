@@ -1,0 +1,10 @@
+terraform import
+
+1) Create a instance from the aws console (t3.micro) and note down the instance id
+
+2) teraform import aws_instance.<name of the aws_instnace function> instanceid
+
+3) Run terraform state list
+
+4) terraform destroy (Check instance is deleted)
+

@@ -1,0 +1,37 @@
+lab for terraform workspace
+
+1)
+
+ terraform workspace list
+
+2) 
+terraform workspace new test 
+
+<msg you rcv>
+
+//terraform workspace new test
+//Created and switched to workspace "test"!
+
+3) ls -tlr
+
+//a directory is created
+
+4) terraform plan
+
+5) terraform apply
+
+6) check, if you can delete
+
+ terraform workspace delete test
+Workspace "test" is your active workspace.
+
+
+7) Switch the workspace
+
+terraform workspace select default
+
+8) Try to delete the workspace
+
+terraform workspace delete test
+
+ terraform workspace delete -force test

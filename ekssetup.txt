@@ -1,0 +1,47 @@
+Provisioning AWS EKS Cluster with Terraform
+
+1. Check the terraform version
+
+terraform --version
+
+Terraform v1.3+ installed locally.
+
+2. Install kubectl
+
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat <<EOF | sudo tee /etc/apt/sources.list.d/kubernetes.list
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update
+
+apt-get install -y kubectl
+
+
+3. clone a repository which contains everything you need to set up EKS:
+
+git clone https://github.com/hashicorp/learn-terraform-provision-eks-cluster
+
+4. Change into the repository directory.
+
+cd learn-terraform-provision-eks-cluster
+
+5.Inside you’ll see a few files, the main one being main.tf:
+
+
+cluster_name = "studentxx-eks-${random_string.suffix.result}"
+
+6. module vpc (in main.tf)
+
+
+  name = "studentxx-vpc"
+
+7. terraform init
+
+8. terraform plan -out tfplanout
+
+9. terraform apply tfplanout aws eks --region <specify region where deployed> update-kubeconfig --name <name of eks cluster>
+
+
+10. kubectl get nodes
+
+11. terraform destroy

@@ -1,0 +1,35 @@
+How to publish image on github
+
+Please follow the link for configuring ssh and github setup
+
+https://www.openwriteup.com/?page_id=1081
+
+1. In the module/lab directory (Where module source codes resides)
+
+  git init && git add -A
+
+2.config username and email
+ git config --global user.email "amit@ow.com"
+  git config --global user.name "amit"
+
+3.Commit and push
+
+ git commit -m "add all module files"
+ git push -u origin  main
+ git tag -a "v0.0.1" -m "First release of s3-website module"
+ git push --follow-tags
+
+4.Modify the main.tf
+
+module "webserver" {
+#  source = "./lab"
+#Provide the git source
+   source = "git@github.com:amitopenwriteup/modulev1.git"
+#  instance_type = var.instance_type
+   instance_type = "t3.micro"
+  # Specify dependencies explicitly using depends_on if needed
+  }
+
+5.terraform init
+6.terraform plan
+7.terraform apply

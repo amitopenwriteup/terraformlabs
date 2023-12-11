@@ -1,0 +1,29 @@
+State drift lab
+
+1) Create a instance using terraform "t3.micro"
+2) Poweroff the instance from aws console
+3) Change the instance type
+Click on instance-->Action-->Change Instance Type
+4)Make instance type to t3.medium
+5)Start the instance
+6) Run terraform plan
+
+
+  # module.webserver.aws_instance.example will be updated in-place
+  ~ resource "aws_instance" "example" {
+        id                                   = "i-0a1b1a96f17b1c7f5"
+      ~ instance_type                        = "t3.medium" -> "t3.micro"
+      ~ tags                                 = {
+          - "Name" = "MyAmitInstance-20231210"
+        } -> (known after apply)
+      ~ tags_all                             = {
+          - "Name" = "MyAmitInstance-20231210"
+        } -> (known after apply)
+        # (30 unchanged attributes hidden)
+
+
+
+
+7) terraform apply
+
+It will change to from t3.medium to t3.micro

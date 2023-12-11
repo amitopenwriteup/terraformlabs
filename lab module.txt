@@ -1,0 +1,48 @@
+Module testing
+
+1) Please create a directory strucutre
+
+mkdir -p /root/module/lab
+cp  ec2.tf /root/module/lab/
+cp var.tf /root/module/lab/
+cp output.tf /root/module/lab
+cp data.tf /root/module/lab
+cp vpcsubnet.tf /root/module/lab
+cp sshkey.tf /root/module/lab/
+
+
+2) In the var.tf make following changes
+
+variable "instance_type" {}
+
+3) Copy following files
+ 
+ cp ec2.tf /root/module/
+ cp training.1-vm-key /root/module
+ cp training.1-vm-key.pub /root/module
+ cp provider.tf /root/module
+
+
+4) cd to /root/module
+
+cd /root/module
+
+5) remove everything from /root/module/ec2.tf
+6) Add following module call in ec2.tf
+
+module "webserver" {
+  source = "./lab"
+#  instance_type = var.instance_type
+   instance_type = "t3.micro"
+  # Specify dependencies explicitly using depends_on if needed
+  }
+
+7) Run terraform init
+8) from the /root/module
+
+terraform plan -out tfplanout
+
+9. terraform apply tfplanout
+
+
+
