@@ -45,5 +45,5 @@ aws eks --region <specify region where deployed> update-kubeconfig --name <name 
 
 
 10. kubectl get nodes
-
+kubectl get pods -A
 11. terraform destroy
