@@ -39,7 +39,9 @@ cluster_name = "studentxx-eks-${random_string.suffix.result}"
 
 8. terraform plan -out tfplanout
 
-9. terraform apply tfplanout aws eks --region <specify region where deployed> update-kubeconfig --name <name of eks cluster>
+9. terraform apply tfplanout 
+
+aws eks --region <specify region where deployed> update-kubeconfig --name <name of eks cluster>
 
 
 10. kubectl get nodes
