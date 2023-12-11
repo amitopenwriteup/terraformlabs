@@ -1,0 +1,24 @@
+provider "aws" {
+  access_key = var.access_key
+  secret_key = var.secret_key
+  region     = "us-west-2" # Replace with your desired AWS region
+}
+resource "aws_instance" "example" {
+  ami           = "ami-0b8987a72eee28c3d" # Replace with your desired AMI ID
+  instance_type = "t2.micro"
+  subnet_id     = "subnet-0e09953db95a5ac65" # Replace with your desired subnet ID
+  key_name      = "my-key"                   # Replace with your desired key pair name
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = file("my-key.pem")
+    host        = self.public_ip
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "echo 'Hello, World!'",
+      "echo 'This command is executed remotely on the EC2 instance.'",
+    ]
+  }
+}
