@@ -7,7 +7,7 @@ Click on instance-->Action-->Change Instance Type
 4)Make instance type to t3.medium
 5)Start the instance
 6) Run terraform plan
-
+7) terraform refresh
 
   # module.webserver.aws_instance.example will be updated in-place
   ~ resource "aws_instance" "example" {
